@@ -19,7 +19,7 @@ def check_alpha101():
             Output(out, f.__name__)
     simd_len = 16 if sys.argv[2] == "avx512" else 8
     f = Function(builder.ops)
-    src = compileit(f, "alpha_101", blocking_len=simd_len, output_layout="TS", options={"opt_reduce": True, "fast_log": True})
+    src = compileit(f, "alpha_101", blocking_len=simd_len, output_layout="TS", input_layout="TS",options={"opt_reduce": True, "fast_log": True})
     os.makedirs(sys.argv[1], exist_ok=True)
     with open(sys.argv[1]+"/Alpha101.cpp", 'w') as f:
         f.write(src)

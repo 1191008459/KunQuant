@@ -527,7 +527,8 @@ def alpha098(self: AllData):
     
 def alpha099(self: AllData):
     adv60 = sma(self.volume, 60)
-    return (bool_to_10(rank(correlation(ts_sum(((self.high + self.low) / 2), 20), ts_sum(adv60, 20), 9)) <rank(correlation(self.low, self.volume, 6))) * -1)
+    return (bool_to_10(rank(correlation(ts_sum(((self.high + self.low) / 2),
+     20), ts_sum(adv60, 20), 9)) <rank(correlation(self.low, self.volume, 6))) * -1)
 
 def alpha101(self: AllData):
     return (self.close - self.open) /((self.high - self.low) + 0.001)
