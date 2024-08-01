@@ -104,10 +104,10 @@ def bool_to_10(v: OpBase) -> OpBase:
     return Select(v, ConstantOp(1), ConstantOp(0))
 
 def Inv(v: OpBase) -> OpBase:
-    return DivConst(ConstantOp(1), v)
+    return Div(ConstantOp(1), v)
 
 def ts_maxmin(v1: OpBase, window: int) -> OpBase:
-    return WindowedMax(v1,window) - WindowedMin(v1,window)
+    return Sub(WindowedMax(v1,window),WindowedMin(v1,window))
 
 def ts_maxmin_norm(v1: OpBase, window: int) -> OpBase:
     return Div(Sub(v1, WindowedMin(v1,window)), ts_maxmin(v1,window))
@@ -152,6 +152,7 @@ def Risk005(self: AllData):
 
 def Risk006(self: AllData):
     HighExRet = self.HighExRet
+    
     out1 = Inv(ts_ir(Pow(HighExRet, ConstantOp(0.333)),244))
     return Rank(out1)
 
@@ -164,16 +165,16 @@ def Risk007(self: AllData):
 def Risk008(self: AllData):
     low = self.low
     tr = self.TR
-    out1 = ts_ir(Log(Sub(low,Pow(tr,ConstantOp(2)))),122)
+    out1 = ts_ir(Log(Sub(low,Pow(tr,ConstantOp(2.0)))),122)
     return out1 
 
 def Risk010(self: AllData):
-    high = self.high
-    return ts_ir(high,60)
+    High = self.high
+    return ts_ir(High,60)
 
 def Risk014(self: AllData):
     highlowpct = self.HighLowPct
-    out = Sqrt(WindowedSum(Log(MulConst(highlowpct, 488)),244))
+    out = Sqrt(WindowedSum(Log(MulConst(highlowpct, 488.0)),244))
     return out 
 
 def Risk017(self: AllData):
@@ -205,7 +206,7 @@ def Risk013(self: AllData):
     vwap_ret = self.VwapPct
     Vwap = self.vwap
     preclose = self.Preclose
-    out = ts_sum(Sqrt(Mul(Sub(vwap_ret, Vwap),preclose)),122)
+    out = WindowedSum(Sqrt(Mul(Sub(vwap_ret, Vwap),preclose)),122)
     return Div(ConstantOp(366),out)
 
 def Risk019(self: AllData):
@@ -216,8 +217,8 @@ def Risk019(self: AllData):
 
 def Risk020(self: AllData):
     preclose = self.Preclose
-    Open = self.open
-    return WindowedLinearRegressionSlope(preclose,122,scale(Open))
+    open = self.open
+    return WindowedLinearRegressionSlope(preclose,122,scale(open))
 
 def Risk029(self: AllData):
     amount = self.amount
@@ -230,8 +231,8 @@ def Risk031(self: AllData):
     return Abs(WindowedLinearRegressionSlope(highpct, 60, highExRet))
 
 
-all_risk = [Risk001,Risk002,Risk003,Risk004,Risk005,
-            Risk006,Risk007,Risk008,Risk010,Risk014,
+all_risk = [Risk001,Risk002,Risk003,Risk004,Risk005,Risk006,
+          Risk007,Risk008,Risk010,Risk014,
             Risk017,Risk036,Risk016,Risk022,Risk018,
             Risk013,Risk019,Risk020,Risk029,Risk031
             
